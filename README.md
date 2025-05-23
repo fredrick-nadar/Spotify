@@ -7,8 +7,6 @@
 [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
-<img src="https://i.imgur.com/8hNtRyX.png" alt="Spotify Clone Preview" width="600"/>
-
 ### 🚀 A Modern Spotify Clone Built with React & Tailwind CSS
 
 [✨ Features](#features) · [🛠️ Installation](#installation) · [🎯 Usage](#usage) · [🔧 Tech Stack](#tech-stack) · [📝 License](#license)
@@ -101,6 +99,6 @@ MIT © [Your Name]
 
 ### 🌟 Star this repo if you find it useful!
 
-Made with ❤️ by [Your Name]
+Made with ❤️ by Freddy
 
 </div>
