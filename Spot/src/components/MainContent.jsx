@@ -1,16 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMusicContext } from '../context/MusicContext';
 import TrackCard from './TrackCard';
 import { categories } from '../data/musicData';
-import { PlayIcon } from '@heroicons/react/24/solid';
+import { PlayIcon, PauseIcon, ClockIcon } from '@heroicons/react/24/solid';
 
 const MainContent = () => {
-  const { allPlaylists, allSongs, playPlaylist, playSong } = useMusicContext();
+  const { 
+    allSongs, 
+    allPlaylists, 
+    playPlaylist, 
+    playSong, 
+    currentSong, 
+    isPlaying, 
+    togglePlay,
+    currentPlaylist 
+  } = useMusicContext();
+  
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [activePlaylist, setActivePlaylist] = useState(null);
+  const [headerBgColor, setHeaderBgColor] = useState('rgb(83, 83, 83)');
 
   const filteredSongs = selectedCategory === 'All' 
     ? allSongs 
     : allSongs.filter(song => song.category === selectedCategory);
+
+  // Set a random background color for the header based on the playlist or current view
+  useEffect(() => {
+    const colors = [
+      'rgb(39, 133, 106)', // Spotify green
+      'rgb(132, 0, 231)',  // Purple
+      'rgb(30, 50, 100)',   // Blue
+      'rgb(180, 30, 80)',   // Pink
+      'rgb(140, 25, 50)',   // Red
+      'rgb(141, 103, 171)', // Lavender
+      'rgb(20, 138, 8)',    // Dark green
+      'rgb(188, 89, 0)',    // Orange
+      'rgb(233, 20, 41)',   // Bright red
+    ];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    setHeaderBgColor(randomColor);
+  }, [currentPlaylist]);
 
   return (
     <div className="flex-1 bg-gradient-to-b from-[#121212] to-black overflow-y-auto p-8">
@@ -90,4 +119,4 @@ const MainContent = () => {
   );
 };
 
-export default MainContent; 
+export default MainContent;
