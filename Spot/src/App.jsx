@@ -9,10 +9,10 @@ import { MusicProvider } from './context/MusicContext'
 const App = () => {
   return (
     <MusicProvider>
-      <div className="flex flex-col h-screen bg-black">
-        <div className="flex flex-1 overflow-y-hidden">
+      <div className="flex flex-col h-screen bg-[#121212]">
+        <div className="flex flex-1 overflow-hidden">
           <Sidebar />
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col overflow-hidden">
             <Navbar />
             <MainContent />
           </div>
