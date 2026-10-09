@@ -1,104 +1,27 @@
-# 🎵 Spotify Clone
+# Spot – Spotify-style web player
 
-<div align="center">
+React 19 + Vite + Tailwind 4 frontend (`frontend/`) and a small Express + SQLite auth API (`backend/`).
+Music is streamed from the Internet Archive under Creative Commons licences (see `/credits` in the app).
 
-[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-
-### 🚀 A Modern Spotify Clone Built with React & Tailwind CSS
-
-[✨ Features](#features) · [🛠️ Installation](#installation) · [🎯 Usage](#usage) · [🔧 Tech Stack](#tech-stack) · [📝 License](#license)
-
-</div>
-
----
-
-## ✨ Features
-
-### 🎵 Music Playback
-- **Real-time Player** - Full-featured music player with play/pause, next/previous controls
-- **Progress Bar** - Visual track progress with time display
-- **Volume Control** - Adjustable volume slider
-
-### 📱 Modern UI
-- **Responsive Design** - Perfect display on all devices
-- **Dark Theme** - Sleek, modern dark interface
-- **Hover Effects** - Smooth, interactive animations
-
-### 🎼 Music Management
-- **Category Filtering** - Browse music by genre
-- **Playlist Support** - Create and manage playlists
-- **Queue System** - Advanced queue management
-
-### 🎨 Visual Features
-- **Album Artwork** - High-quality album/track artwork
-- **Active Track Highlighting** - Visual feedback for current track
-- **Animated Components** - Smooth transitions and animations
-
-## 🛠️ Installation
+## Run
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/spotify-clone.git
+# 1. backend (Node >= 22.13; uses built-in node:sqlite)
+cd backend && npm install
+cp .env.example .env     # then set JWT_SECRET (>= 32 random chars)
+npm start                # http://localhost:4000
 
-# Navigate to project directory
-cd spotify-clone
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+# 2. frontend
+cd frontend && npm install
+npm run dev              # http://localhost:5173 (proxies /api to the backend)
 ```
 
-## 🔧 Tech Stack
+Tests/checks: `cd backend && npm test`, `cd frontend && npm run lint && npm run build`.
 
-<div align="center">
+## Notes
 
-| Technology | Purpose |
-|------------|---------|
-| ⚛️ React | Frontend Framework |
-| 🎨 Tailwind CSS | Styling |
-| ⚡ Vite | Build Tool |
-| 🦸 Heroicons | Icons |
-| 📦 Context API | State Management |
-
-</div>
-
-## 🎯 Usage
-
-1. **Browse Music** 🎵
-   - Filter by category
-   - Explore playlists
-   - View track details
-
-2. **Playback Control** ⏯️
-   - Play/Pause tracks
-   - Skip forward/backward
-   - Adjust volume
-   - Queue management
-
-3. **Playlist Features** 📑
-   - View playlists
-   - Play entire playlists
-   - Track highlighting
-
-## 📝 License
-
-<div align="center">
-
-MIT © [Your Name]
-
-</div>
-
----
-
-<div align="center">
-
-### 🌟 Star this repo if you find it useful!
-
-Made with ❤️ by Freddy
-
-</div>
+- Accounts live in `backend/data/spot.db` (gitignored). Playlists, liked songs and recently played are stored
+  per user in the browser's localStorage and do not sync across devices.
+- Auth: scrypt password hashes, HS256 JWT in an HttpOnly `SameSite=Strict` cookie, server-side session rows
+  (logout revokes), Origin check on state-changing requests, rate-limited auth routes.
+- Catalogue: `frontend/src/data/catalogue.js`. Many tracks are CC BY-NC(-SA): non-commercial use only.
