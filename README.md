@@ -89,7 +89,7 @@ npm run dev
 
 <div align="center">
 
-MIT © [Your Name]
+MIT © Fredrick
 
 </div>
 

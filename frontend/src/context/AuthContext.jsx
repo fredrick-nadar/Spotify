@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { api } from '../lib/api'
+import { Signup, Login } from '../lib/clevertap'
 
 const AuthContext = createContext(null)
 
@@ -16,17 +17,28 @@ export function AuthProvider({ children }) {
   }, [])
 
   const login = useCallback(async (credentials) => {
-    setUser((await api('/auth/login', { method: 'POST', body: credentials })).user)
-  }, [])
+  const { user } = await api('/auth/login', {
+    method: 'POST',
+    body: credentials,
+  })
+
+  setUser(user)
+  Login(user)
+  console.log('CleverTap: User logged in and tracked:', user)
+}, [])
 
   const signup = useCallback(async (details) => {
-    setUser((await api('/auth/signup', { method: 'POST', body: details })).user)
+    const { user: created } = await api('/auth/signup', { method: 'POST', body: details })
+    Signup(created)
+    console.log('CleverTap: User signed up and tracked:', created)
+    setUser(created)
   }, [])
 
   const logout = useCallback(async () => {
     try {
       await api('/auth/logout', { method: 'POST', body: {} })
     } finally {
+      console.log('CleverTap: User logged out')
       setUser(null)
     }
   }, [])
