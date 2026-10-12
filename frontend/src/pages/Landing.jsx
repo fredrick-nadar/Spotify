@@ -12,8 +12,8 @@ import { LandingFooter, LandingNav } from '../components/landing/LandingChrome'
 
 // Tracks with real cover art, so the page leads with proper artwork.
 const FEATURED_IDS = [
-  'tigerberry-in-your-eyes', 'torley-remember-melody', 'intouch-heaven-in-your-mouth',
-  'derek-clegg-the-river', 'twizzle-falling', 'cj-lavoire-first-of-the-year',
+  'alan-walker-fade', 'cartoon-on-and-on', 'deaf-kev-invincible',
+  'janji-heroes-tonight', 'elektronomia-sky-high', 'thefatrat-unity',
 ]
 const featured = FEATURED_IDS.map(getTrack).filter(Boolean)
 

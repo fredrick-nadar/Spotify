@@ -5,8 +5,8 @@ export default function Credits() {
     <>
       <h1 className="mb-2 text-3xl font-extrabold tracking-tight">Music credits</h1>
       <p className="mb-6 max-w-2xl text-sm text-muted">
-        Every track is streamed from the Internet Archive under the Creative Commons licence shown. Several licences are
-        non-commercial, so this demo is not for commercial use. Artwork is the thumbnail archive.org provides for each item.
+        Every track is streamed under NoCopyrightSounds (NCS) or Creative Commons / copyright-free creator licences shown below.
+        Music is free for non-commercial listening and creator usage with attribution. Artwork is provided by respective release archives.
       </p>
       <ul className="divide-y divide-line">
         {tracks.map((t) => (
