@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { api } from '../lib/api'
-import { Signup, Login } from '../lib/clevertap'
+import { Signup, Login, identify } from '../lib/clevertap'
 
 const AuthContext = createContext(null)
 
@@ -11,7 +11,12 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     let cancelled = false
     api('/auth/me')
-      .then((data) => !cancelled && setUser(data.user))
+      .then((data) => {
+        if (cancelled) return
+        // Restored session: re-identify so events stay attached to this user's profile.
+        if (data.user) identify(data.user)
+        setUser(data.user)
+      })
       .catch(() => !cancelled && setUser(null))
     return () => { cancelled = true }
   }, [])

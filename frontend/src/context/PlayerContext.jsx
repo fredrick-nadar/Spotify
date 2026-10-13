@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { readJSON, writeJSON } from '../lib/storage'
+import { SongPlayed } from '../lib/clevertap'
 import { useLibrary } from './LibraryContext'
 
 const PlayerContext = createContext(null)
@@ -45,6 +46,7 @@ export function PlayerProvider({ children }) {
       setStatus(err.name === 'NotAllowedError' ? 'paused' : 'error')
     })
     recentRef.current?.(track.id)
+    SongPlayed(track)
   }, [audio])
 
   const goTo = useCallback((index) => {

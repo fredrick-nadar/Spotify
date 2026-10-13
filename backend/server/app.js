@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto'
 import express from 'express'
 import helmet from 'helmet'
 import { rateLimit } from 'express-rate-limit'
@@ -41,7 +42,7 @@ export function createApp({ db, config }) {
     message: { error: 'Too many attempts. Try again later.' },
   })
 
-  const insertUser = db.prepare('INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)')
+  const insertUser = db.prepare('INSERT INTO users (id, name, email, password_hash) VALUES (?, ?, ?, ?)')
   const userByEmail = db.prepare('SELECT * FROM users WHERE email = ?')
 
   app.disable('x-powered-by')
@@ -70,9 +71,9 @@ export function createApp({ db, config }) {
     const { name, email, password, errors } = validateSignup(req.body)
     if (Object.keys(errors).length) return res.status(400).json({ error: 'Invalid input.', fields: errors })
     const hash = await hashPassword(password)
-    let id
+    const id = randomUUID()
     try {
-      id = Number(insertUser.run(name, email, hash).lastInsertRowid)
+      insertUser.run(id, name, email, hash)
     } catch (err) {
       if (err?.errcode === 2067 || /UNIQUE/.test(err?.message ?? '')) {
         return res.status(409).json({ error: 'An account with that email already exists.' })

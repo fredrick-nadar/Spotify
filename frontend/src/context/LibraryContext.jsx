@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { getTrack } from '../lib/catalogue'
+import { PlaylistCreated } from '../lib/clevertap'
 import { readJSON, writeJSON } from '../lib/storage'
 import { useToast } from './ToastContext'
 
@@ -31,6 +32,8 @@ export function LibraryProvider({ userId, children }) {
   const { notify } = useToast()
   const [state, setState] = useState(() => load(userId))
   const warned = useRef(false)
+  const playlistCount = useRef(0)
+  playlistCount.current = state.playlists.length
 
   useEffect(() => {
     if (!writeJSON(storageKey(userId), state) && !warned.current) {
@@ -50,6 +53,7 @@ export function LibraryProvider({ userId, children }) {
     const clean = name.trim().slice(0, MAX_NAME)
     if (!clean) return null
     const id = crypto.randomUUID()
+    if (playlistCount.current < MAX_PLAYLISTS) PlaylistCreated({ id, name: clean, trackIds: [] })
     setState((s) => (s.playlists.length >= MAX_PLAYLISTS ? s : { ...s, playlists: [...s.playlists, { id, name: clean, trackIds: [] }] }))
     return id
   }, [])

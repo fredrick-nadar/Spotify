@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto'
 import { mkdirSync } from 'node:fs'
 import path from 'node:path'
 import { DatabaseSync } from 'node:sqlite'
@@ -18,6 +19,31 @@ const migrations = [
      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
    );
    CREATE INDEX sessions_user_id ON sessions(user_id);`,
+  // Switch user ids from autoincrement integers to UUIDs. Existing users keep their data but get
+  // new ids; sessions are dropped (they reference the old ids), so everyone signs in again.
+  (db) => {
+    const old = db.prepare('SELECT * FROM users').all()
+    db.exec(`
+      DROP TABLE sessions;
+      ALTER TABLE users RENAME TO users_old;
+      CREATE TABLE users (
+        id            TEXT PRIMARY KEY,
+        name          TEXT NOT NULL,
+        email         TEXT NOT NULL UNIQUE,
+        password_hash TEXT NOT NULL,
+        created_at    TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+      );
+      CREATE TABLE sessions (
+        id         TEXT PRIMARY KEY,
+        user_id    TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        expires_at INTEGER NOT NULL,
+        created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+      );
+      CREATE INDEX sessions_user_id ON sessions(user_id);`)
+    const insert = db.prepare('INSERT INTO users (id, name, email, password_hash, created_at) VALUES (?, ?, ?, ?, ?)')
+    for (const u of old) insert.run(randomUUID(), u.name, u.email, u.password_hash, u.created_at)
+    db.exec('DROP TABLE users_old')
+  },
 ]
 
 export function openDatabase(dbPath) {
@@ -29,7 +55,8 @@ export function openDatabase(dbPath) {
   for (let v = applied; v < migrations.length; v++) {
     db.exec('BEGIN')
     try {
-      db.exec(migrations[v])
+      if (typeof migrations[v] === 'function') migrations[v](db)
+      else db.exec(migrations[v])
       db.exec(`PRAGMA user_version = ${v + 1}`)
       db.exec('COMMIT')
     } catch (err) {
